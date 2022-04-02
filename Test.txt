@@ -1,0 +1,4 @@
+x_tab = 20
+y_tab = 30
+taille_case = 20
+vitesse_base = 1000
