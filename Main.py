@@ -13,6 +13,7 @@ def Select_Fic(Fen_Main):
         Nomfichier_Sel = askopenfilename() # lance la fenêtre de sélection
         print (Nomfichier_Sel)
         Fen_Main.Txt_Fic.insert(0,Nomfichier_Sel)
+        Fen_Sel.destroy()
 
     except IndexError as e:
         print('Erreur Select_Fic : ', e)
@@ -72,23 +73,18 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
                         ## Pas de Pb pour la colonne/ligne 0 qui sera au centre
 
                         # On commence par tout mettre à zéro (Init tableau)
-                        # Création du tableau
+                        # Création des tableaux vides
                         Tableau_Principal = np.zeros((int(Nb_Variable)*2+1,int(Nb_Variable)*2+1), int)
-                        if Tableau_Principal.shape[-1] == 0 : del Tableau_Principal
-                        # Remplissage de 0
-                        if Init_Tableau(Tableau_Principal, int(Nb_Variable)*2+1, 0):
-                            # print (Tableau_Principal)
+                        Tableau_Transpose = np.zeros((int(Nb_Variable)*2+1,int(Nb_Variable)*2+1), int)
 
-                            # Pour chaque Clause, on va mettre 1 dans la matrice
-                            if Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
-                                print (Tableau_Principal)
-                                print ("===================================================")
+                        # Pour chaque Clause, on va mettre 1 dans la matrice
+                        if Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
+                            print (Tableau_Principal)
+                            print ("===================================================")
 
-                                # Transposition matrice
-                                if Transpose_Tableau(Tableau_Principal, int(Nb_Variable)*2+1): 
-                                    print (Tableau_Principal)
-                                else:
-                                    return False
+                            # Transposition matrice
+                            if Transpose_Tableau(Tableau_Principal, Tableau_Transpose, int(Nb_Variable)*2+1): 
+                                print (Tableau_Transpose)
                             else:
                                 return False
                         else:
@@ -99,7 +95,6 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
                     print ("Erreur fichier config : Lignes_Lue = " + Lignes_Lue)
                     return False
 
-
                 ## Lecture ligne suivante
                 # #print(Lignes_Lue)
                 Lignes_Lue = File_In.readline()
@@ -108,20 +103,6 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
     except IndexError as e:
         print('Erreur Lecture_Fichier_Config  : ', e)
         return False
-
-############################## Fonction Init_Tableau
-def Init_Tableau(Tableau_Principal, X, Valeur=0):
-    try:
-        # Je remplis tout le tableau de vide "O"...
-        for i in range(X):
-            for j in range(X):
-                #print(str(i) + "-" + str(j) + ":" + str(Valeur))
-                Tableau_Principal[i][j] = Valeur
-        return True
-    except IndexError as e:
-        print('Erreur Init_Tableau : ', e)
-        return False
-
 
 ############################## Fonction Remplit_Tableau
 def Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
@@ -166,21 +147,12 @@ def Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
         return False
 
 ############################## Fonction def Transpose_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
-def Transpose_Tableau(Tableau_Principal, X):
+def Transpose_Tableau(Tableau_Principal, Tableau_Transpose, X):
     try:
-        Tableau_Temp = []
-        Tableau_Temp = np.zeros((X,X), int)
-        if Tableau_Temp.shape[-1] == 0 : del Tableau_Temp
-
         # On transpose dans un tableau temporaire (i <=> j)
         for i in range(X):
             for j in range(X):
-                Tableau_Temp[i][j] = Tableau_Principal[j][i]
-
-        # On ré-injecte dans le tableau Principal
-        for i in range(X):
-            for j in range(X):
-                Tableau_Principal[i][j] = Tableau_Temp[i][j]
+                Tableau_Transpose[i][j] = Tableau_Principal[j][i]
 
         return True
 
@@ -188,21 +160,12 @@ def Transpose_Tableau(Tableau_Principal, X):
         print('Erreur Transpose_Tableau : ', e)
         return False
 
-
-## Fonction qui écrit une valeur dans un tableau en X/Y
-## Param Tableau, PosX, PosY, Valeur à Ecrire
-#def Ajout_Val_Tableau(Tableau_Principal, X, Y, Valeur=str):
-#    try:
-#        Tableau_Principal[X][Y] = Valeur
-#    except :
-#        print('Erreur de Ajout_Val_Tableau : ')
-
-
 ############################## Fct Main principale
 def Main():
     try:
-        global Tableau_Principal
+        global Tableau_Principal, Tableau_Transpose
         Tableau_Principal = []
+        Tableau_Transpose = []
 
         # Création de la fenêtre
         Fen_Main = tk.Tk()
