@@ -21,9 +21,23 @@ def Select_Fic(Fen_Main):
 ############################## Fct Verif_SAT - Vérification du fichier de config
 def Verif_SAT(Nomfichier_Sel,Fen_Main):
     try:
+        # Etape 1 : Lecture Fichier config + remplissage matrice
         if Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
-            print("Resultat Final : La fonction est-elle SAT ?")
-            return True
+            # Etape 2 : Transposition matrice
+            print ("===================================================")
+            print (Tableau_Principal)
+            print ("===================================================")
+            if Transpose_Tableau(int(Nb_Variable)*2+1): 
+                print ("===================================================")
+                print (Tableau_Transpose)
+                print ("===================================================")
+                if Parcours_Profondeur(int(Nb_Variable)*2+1): 
+                    print("Resultat Final : La fonction est-elle SAT ?")
+                    return True
+                else:
+                    return False
+            else:
+                return False
         else:
             print("Le fichier config est incorrect")
             return False
@@ -35,6 +49,7 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
 ############################## Vérification du fichier de config
 ############################## MAJ de la Matrice
 def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
         print("Nomfichier_Sel" + str(Nomfichier_Sel))
         #Ouverture du fichier
@@ -62,8 +77,6 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
                         print("Nb_Variable : " + Nb_Variable)
                         print("Nb_Clause : " + Nb_Clause)
 
-                        #print("Le fichier config est correct")
-
                         ## A ce niveau on a toutes les infos, la suite est la iste des clauses.
                         ## On va donc créer a matrice sous forme d'un tableau
                         ## Les lignes / colonnes sont les Variables (Sommet)
@@ -78,17 +91,7 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
                         Tableau_Transpose = np.zeros((int(Nb_Variable)*2+1,int(Nb_Variable)*2+1), int)
 
                         # Pour chaque Clause, on va mettre 1 dans la matrice
-                        if Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
-                            print (Tableau_Principal)
-                            print ("===================================================")
-
-                            # Transposition matrice
-                            if Transpose_Tableau(Tableau_Principal, Tableau_Transpose, int(Nb_Variable)*2+1): 
-                                print (Tableau_Transpose)
-                            else:
-                                return False
-                        else:
-                            return False
+                        return Remplit_Tableau(Nb_Clause, File_In)
                     else:
                         return False
                 else:
@@ -98,14 +101,15 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
                 ## Lecture ligne suivante
                 # #print(Lignes_Lue)
                 Lignes_Lue = File_In.readline()
-        return True
+        return False
 
     except IndexError as e:
         print('Erreur Lecture_Fichier_Config  : ', e)
         return False
 
 ############################## Fonction Remplit_Tableau
-def Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
+def Remplit_Tableau(Nb_Clause, File_In):
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
         for i_Clause_Lue in range(int(Nb_Clause)):
             ######################## Lecture et décomposition de la clause
@@ -140,16 +144,17 @@ def Remplit_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
             Clause_Y = int(Nb_Variable) + int(Litteral_2)*(-1)
             print("2 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
             Tableau_Principal[int(Clause_X)][int(Clause_Y)] = 1
-            #print (Tableau_Principal)
+
         return True
     except IndexError as e:
         print('Erreur Remplit_Tableau : ', e)
         return False
 
 ############################## Fonction def Transpose_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
-def Transpose_Tableau(Tableau_Principal, Tableau_Transpose, X):
+def Transpose_Tableau(X):
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
-        # On transpose dans un tableau temporaire (i <=> j)
+        # On transpose dans un tableau (i <=> j)
         for i in range(X):
             for j in range(X):
                 Tableau_Transpose[i][j] = Tableau_Principal[j][i]
@@ -160,12 +165,31 @@ def Transpose_Tableau(Tableau_Principal, Tableau_Transpose, X):
         print('Erreur Transpose_Tableau : ', e)
         return False
 
+############################## Fonction def Transpose_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
+def Parcours_Profondeur(X):
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable
+    try:
+        # On parcours la liste des Variables
+        for i in range(X):
+            # On parcours la liste des Variables à visiter
+            for j in range(X):
+                if Tableau_Principal[i][j] == 1:
+                    # On enrichit la liste des Variables déjà visiter
+                    print("[i] : " + str(i) +" - [j] : " + str(j))
+
+        return True
+
+    except IndexError as e:
+        print('Erreur Parcours_Profondeur : ', e)
+        return False
+
 ############################## Fct Main principale
 def Main():
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
-        global Tableau_Principal, Tableau_Transpose
         Tableau_Principal = []
         Tableau_Transpose = []
+        Nb_Variable = 0
 
         # Création de la fenêtre
         Fen_Main = tk.Tk()
