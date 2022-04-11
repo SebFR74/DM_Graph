@@ -167,16 +167,39 @@ def Transpose_Tableau(X):
 
 ############################## Fonction def Transpose_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
 def Parcours_Profondeur(X):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable
-    try:
-        # On parcours la liste des Variables
-        for i in range(X):
-            # On parcours la liste des Variables à visiter
-            for j in range(X):
-                if Tableau_Principal[i][j] == 1:
-                    # On enrichit la liste des Variables déjà visiter
-                    print("[i] : " + str(i) +" - [j] : " + str(j))
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Nb_Composante
+    Liste_Composante = []
+    Nb_Composante = 0
 
+    try:
+        # On Vide la liste des Variables déjà parcourus
+        Liste_parcourus = []
+
+        # On parcours la liste des Variables A parcourir
+        for i in range(X):
+            # On cherche si la variable a déjà été parcourue
+            if X not in Liste_parcourus:
+                # On ajoute si la variable a déjà été parcourue
+                Liste_parcourus.append(X)
+                Liste_Composante.append(X)
+
+                # On parcours la liste des Variables à visiter
+                for j in range(X):
+                    if Tableau_Principal[i][j] == 1:
+                        # On cherche si la variable a déjà été parcourue
+                        if X not in Liste_parcourus:
+                            # On ajoute si la variable a déjà été parcourue
+                            Liste_parcourus.append(X)
+                            Liste_Composante.append(X)
+                print("Liste_Composante = ")
+                print(Liste_Composante)
+                Tableau_Composante.append(Liste_Composante)
+                Nb_Composante = Nb_Composante + 1
+
+        print("Liste_parcourus = ")
+        print(Liste_parcourus)
+        print("Tableau_Composante = ")
+        print(Tableau_Composante)
         return True
 
     except IndexError as e:
@@ -185,10 +208,12 @@ def Parcours_Profondeur(X):
 
 ############################## Fct Main principale
 def Main():
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante
     try:
         Tableau_Principal = []
         Tableau_Transpose = []
+        Liste_parcourus = []
+        Tableau_Composante = []
         Nb_Variable = 0
 
         # Création de la fenêtre
