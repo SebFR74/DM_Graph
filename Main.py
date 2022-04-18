@@ -3,6 +3,7 @@
 import numpy as np
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
+import sys
 
 ############################## Fct Select_Fic - Sélectionne le fichier de config
 def Select_Fic(Fen_Main):
@@ -23,14 +24,17 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
     try:
         # Etape 1 : Lecture Fichier config + remplissage matrice
         if Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
-            # Etape 2 : Transposition matrice
+            # Etape 2 : Affichage Tableau Principal avec les clauses
             print ("===================================================")
             print (Tableau_Principal)
             print ("===================================================")
+            # Etape 3 : Transposition matrice
             if Transpose_Tableau(int(Nb_Variable)*2+1): 
+                # Etape 4 : Affichage Matrice Trasposée
                 print ("===================================================")
                 print (Tableau_Transpose)
                 print ("===================================================")
+                # Etape 5 : Parcours Profondeur
                 if Parcours_Profondeur(int(Nb_Variable)*2+1): 
                     print("Resultat Final : La fonction est-elle SAT ?")
                     return True
@@ -151,12 +155,12 @@ def Remplit_Tableau(Nb_Clause, File_In):
         return False
 
 ############################## Fonction def Transpose_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
-def Transpose_Tableau(X):
+def Transpose_Tableau(Nb_Val_Tab):
     global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
         # On transpose dans un tableau (i <=> j)
-        for i in range(X):
-            for j in range(X):
+        for i in range(Nb_Val_Tab):
+            for j in range(Nb_Val_Tab):
                 Tableau_Transpose[i][j] = Tableau_Principal[j][i]
 
         return True
@@ -166,7 +170,7 @@ def Transpose_Tableau(X):
         return False
 
 ############################## Fonction def Transpose_Tableau(Tableau_Principal, Nb_Clause, Nb_Variable, File_In):
-def Parcours_Profondeur(X):
+def Parcours_Profondeur(Nb_Val_Tab):
     global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Nb_Composante
     Liste_Composante = []
     Nb_Composante = 0
@@ -176,21 +180,21 @@ def Parcours_Profondeur(X):
         Liste_parcourus = []
 
         # On parcours la liste des Variables A parcourir
-        for i in range(X):
+        for i in range(Nb_Val_Tab):
             # On cherche si la variable a déjà été parcourue
-            if X not in Liste_parcourus:
+            if Nb_Val_Tab not in Liste_parcourus:
                 # On ajoute si la variable a déjà été parcourue
-                Liste_parcourus.append(X)
-                Liste_Composante.append(X)
+                Liste_parcourus.append(Nb_Val_Tab)
+                Liste_Composante.append(Nb_Val_Tab)
 
                 # On parcours la liste des Variables à visiter
-                for j in range(X):
+                for j in range(Nb_Val_Tab):
                     if Tableau_Principal[i][j] == 1:
                         # On cherche si la variable a déjà été parcourue
-                        if X not in Liste_parcourus:
+                        if Nb_Val_Tab not in Liste_parcourus:
                             # On ajoute si la variable a déjà été parcourue
-                            Liste_parcourus.append(X)
-                            Liste_Composante.append(X)
+                            Liste_parcourus.append(Nb_Val_Tab)
+                            Liste_Composante.append(Nb_Val_Tab)
                 print("Liste_Composante = ")
                 print(Liste_Composante)
                 Tableau_Composante.append(Liste_Composante)
@@ -236,7 +240,7 @@ def Main():
         ## Ajout d'un Champ Fichier ##
         Fen_Main.Txt_Fic = tk.Entry(Fen_Main)
         Fen_Main.Txt_Fic.place(x=130,y=10,width=350,height=25)
-
+ 
         ## Ajout d'un Champ Ligne 1 ##
         Fen_Main.Txt_L1 = tk.Entry(Fen_Main)
         Fen_Main.Txt_L1.place(x=130,y=40,width=350,height=25)
@@ -245,9 +249,20 @@ def Main():
         Fen_Main.Txt_L2 = tk.Entry(Fen_Main)
         Fen_Main.Txt_L2.place(x=130,y=70,width=350,height=25)
 
-        ## Lancement de la fenetre ##
-        Fen_Main.mainloop()
-      
+        if len(sys.argv) == 1:
+            ## Lancement de la fenetre car 1 seul param
+            print("Pas d'argument ==> on lancera l'IHM")
+            Fen_Main.mainloop()
+        elif len(sys.argv) == 2:
+            ## Lancement auto si 2ème Param
+            print("2ème Argument trouvé ==> on lancera la verif direct avec " + sys.argv[1])
+            Fen_Main.Txt_Fic.insert(0,sys.argv[1])
+            Verif_SAT(sys.argv[1],Fen_Main)
+        else:
+            print("Erreur Nb Argument")
+            return
+
+
     except IndexError as e:
         print('Erreur Main  : ', e)
 
