@@ -4,6 +4,7 @@ import numpy as np
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 import sys
+import os
 
 ############################## Fct Select_Fic - Sélectionne le fichier de config
 def Select_Fic(Fen_Main):
@@ -23,6 +24,9 @@ def Select_Fic(Fen_Main):
 def Verif_SAT(Nomfichier_Sel,Fen_Main):
     try:
         # Etape 1 : Lecture Fichier config + remplissage matrice
+        if not (os.path.isfile(Nomfichier_Sel) & (os.path.exists(Nomfichier_Sel))):
+            print ("Le fichier n'existe pas : " + Nomfichier_Sel)
+            return True
         if Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
             # Etape 2 : Affichage Tableau Principal avec les clauses
             print ("===================================================")
@@ -36,11 +40,29 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
                 print ("===================================================")
                 # Etape 5 : Parcours Profondeur
                 if Parcours_Profondeur(int(Nb_Variable)*2+1): 
-                    print("Resultat Final : La fonction est-elle SAT ?")
-                    return True
+                    # Etape 6 : Affichage du tableau des composantes
+                    print ("===================================================")
+                    print("Tableau_Composante = ")
+                    print(Tableau_Composante)
+                    print ("===================================================")
+                    # Etape 7 : Parcours Profondeur Inversé
+                    if Parcours_Profondeur_Inv(): 
+                        # Etape 8 : Affichage du tableau des composantes Inv
+                        print ("===================================================")
+                        print("Tableau_Composante_Transpose = ")
+                        print(Tableau_Composante_Transpose)
+                        print ("===================================================")
+                        # Etape 9 : Parcours Profondeur Inversé
+                        print("Resultat Final : La fonction est-elle SAT ?")
+                        return True
+                    else:
+                        print("Parcours_Profondeur_Inv a échouée")
+                        return False
                 else:
+                    print("Parcours_Profondeur a échouée")
                     return False
             else:
+                print("Transpose_Tableau a échouée")
                 return False
         else:
             print("Le fichier config est incorrect")
@@ -171,13 +193,12 @@ def Transpose_Tableau(Nb_Val_Tab):
 
 ############################## Fonction def Parcours_Profondeur():
 def Parcours_Profondeur(Nb_Val_Tab):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Nb_Composante, Liste_Composante
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
 
     try:
         # On Vide la liste des Variables déjà parcourus
         Liste_parcourus = []
         Liste_Composante = []
-        Nb_Composante = 0
 
         # On parcours la liste des Variables A parcourir
         print("Nb_Val_Tab = " + str(Nb_Val_Tab))
@@ -185,7 +206,7 @@ def Parcours_Profondeur(Nb_Val_Tab):
             print("Nb_Val_Tab_En_Cours ========================= " + str(Nb_Val_Tab_En_Cours))
             # On cherche si la variable a déjà été parcourue
             if Nb_Val_Tab_En_Cours not in Liste_parcourus:
-                print("Nb_Val_Tab_En_Cours n'est pas parcourus")
+                #print("Nb_Val_Tab_En_Cours n'est pas parcourus")
                 # On ajoute si la variable a déjà été parcourue
                 Liste_parcourus.append(Nb_Val_Tab_En_Cours)
                 # On ajoute à la liste de la composante en cours
@@ -195,22 +216,56 @@ def Parcours_Profondeur(Nb_Val_Tab):
                 Parcours_Vertical(Nb_Val_Tab_En_Cours)
 
                 # On ajoute la composante en cours à la liste Tableau_Composante
-                print("Liste_Composante = ")
-                print(Liste_Composante)
+                print("Liste_Composante = " + str(Liste_Composante))
                 Tableau_Composante.append(Liste_Composante)
-                print("Tableau_Composante = ")
-                print(Tableau_Composante)
+                #print("Tableau_Composante = ")
+                #print(Tableau_Composante)
 
                 # On efface la liste de la composante en cours pour la nouvelle
                 Liste_Composante = []
 
-                # On calcul le nombre de composante
-                Nb_Composante = Nb_Composante + 1
+        return True
 
-        print("Liste_parcourus = ")
-        print(Liste_parcourus)
-        print("Tableau_Composante = ")
-        print(Tableau_Composante)
+    except IndexError as e:
+        print('Erreur Parcours_Profondeur : ', e)
+        return False
+
+############################## Fonction def Parcours_Profondeur_Inv():
+def Parcours_Profondeur_Inv():
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante
+
+    try:
+        # On Vide la liste des Variables déjà parcourus
+        Liste_parcourus = []
+        Liste_Composante = []
+        Tableau_Composante_Transpose = []
+
+        for Lst_Tab_En_Cours in reversed(Tableau_Composante):
+            print(Lst_Tab_En_Cours)
+            for Val_Tab_En_Cours in (Lst_Tab_En_Cours):
+                print(Val_Tab_En_Cours)
+
+                print("Val_Tab_En_Cours ========================= " + str(Val_Tab_En_Cours))
+                # On cherche si la variable a déjà été parcourue
+                if Val_Tab_En_Cours not in Liste_parcourus:
+                    #print("Nb_Val_Tab_En_Cours n'est pas parcourus")
+                    # On ajoute si la variable a déjà été parcourue
+                    Liste_parcourus.append(Val_Tab_En_Cours)
+                    # On ajoute à la liste de la composante en cours
+                    Liste_Composante.append(Val_Tab_En_Cours)
+
+                    # On Parcours la colonne de la clause trouvée
+                    Parcours_Vertical_Transpose(Val_Tab_En_Cours)
+
+                    # On ajoute la composante en cours à la liste Tableau_Composante
+                    print("Liste_Composante = " + str(Liste_Composante))
+                    Tableau_Composante_Transpose.append(Liste_Composante)
+                    #print("Tableau_Composante_Transpose = ")
+                    #print(Tableau_Composante_Transpose)
+
+                    # On efface la liste de la composante en cours pour la nouvelle
+                    Liste_Composante = []
+
         return True
 
     except IndexError as e:
@@ -219,41 +274,67 @@ def Parcours_Profondeur(Nb_Val_Tab):
 
 ############################## Fonction def Parcours_Vertical():
 def Parcours_Vertical(Nb_Val_Tab_Param):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Nb_Composante, Liste_Composante
-
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
+    
     try:
         # On parcours la liste des Variables à visiter
-        print("Parcours_Vertical !")
+        #print("Parcours_Vertical !")
         for Nb_Val_Tab_En_Cours in range(int(Nb_Variable)*2+1):
             #print("Nb_Val_Tab_Param = " + str(Nb_Val_Tab_Param))
             #print("Nb_Val_Tab_En_Cours = " + str(Nb_Val_Tab_En_Cours))
             #print("Tableau_Principal = " + str(Tableau_Principal[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours]))
             if Tableau_Principal[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours] == 1:
-                print("Tableau_Principal = 1 - As-t'il été parcourus ?")
+                #print("Tableau_Principal = 1 - As-t'il été parcourus ?")
                 # On cherche si la variable a déjà été parcourue
                 if Nb_Val_Tab_En_Cours not in Liste_parcourus:
-                    print("Non pas parcourus donc on ajoute au liste !")
+                    #print("Non pas parcourus donc on ajoute au liste !")
                     # On ajoute si la variable a déjà été parcourue
                     Liste_parcourus.append(Nb_Val_Tab_En_Cours)
                     Liste_Composante.append(Nb_Val_Tab_En_Cours)
-                    print("Et on refait un parcours Vertical !")
+                    #print("Et on refait un parcours Vertical !")
                     Parcours_Vertical(Nb_Val_Tab_En_Cours)
 
     except IndexError as e:
         print('Erreur Parcours_Vertical : ', e)
         return False
 
+############################## Fonction def Parcours_Vertical_Transpose():
+def Parcours_Vertical_Transpose(Nb_Val_Tab_Param):
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
+    
+    try:
+        # On parcours la liste des Variables à visiter
+        #print("Parcours_Vertical !")
+        for Nb_Val_Tab_En_Cours in range(int(Nb_Variable)*2+1):
+            #print("Nb_Val_Tab_Param = " + str(Nb_Val_Tab_Param))
+            #print("Nb_Val_Tab_En_Cours = " + str(Nb_Val_Tab_En_Cours))
+            #print("Tableau_Principal = " + str(Tableau_Principal[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours]))
+            if Tableau_Transpose[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours] == 1:
+                #print("Tableau_Principal = 1 - As-t'il été parcourus ?")
+                # On cherche si la variable a déjà été parcourue
+                if Nb_Val_Tab_En_Cours not in Liste_parcourus:
+                    #print("Non pas parcourus donc on ajoute au liste !")
+                    # On ajoute si la variable a déjà été parcourue
+                    Liste_parcourus.append(Nb_Val_Tab_En_Cours)
+                    Liste_Composante.append(Nb_Val_Tab_En_Cours)
+                    #print("Et on refait un parcours Vertical !")
+                    Parcours_Vertical_Transpose(Nb_Val_Tab_En_Cours)
+
+    except IndexError as e:
+        print('Erreur Parcours_Vertical_Transpose : ', e)
+        return False
+
 ############################## Fct Main principale
 def Main():
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Nb_Composante, Liste_Composante
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante
     try:
         Tableau_Principal = []
         Tableau_Transpose = []
         Liste_parcourus = []
         Tableau_Composante = []
+        Tableau_Composante_Transpose = []
         Liste_Composante = []
         Nb_Variable = 0
-        Nb_Composante = 0
 
         # Création de la fenêtre
         Fen_Main = tk.Tk()
