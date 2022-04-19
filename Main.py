@@ -22,6 +22,7 @@ def Select_Fic(Fen_Main):
 
 ############################## Fct Verif_SAT - Vérification du fichier de config
 def Verif_SAT(Nomfichier_Sel,Fen_Main):
+    global b_Est_SAT
     try:
         # Etape 1 : Lecture Fichier config + remplissage matrice
         if not (os.path.isfile(Nomfichier_Sel) & (os.path.exists(Nomfichier_Sel))):
@@ -29,32 +30,38 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
             return True
         if Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
             # Etape 2 : Affichage Tableau Principal avec les clauses
-            print ("===================================================")
+            print("Tableau_Principal ================================= ")
             print (Tableau_Principal)
-            print ("===================================================")
+            print ("================================================== ")
             # Etape 3 : Transposition matrice
             if Transpose_Tableau(int(Nb_Variable)*2+1): 
                 # Etape 4 : Affichage Matrice Trasposée
-                print ("===================================================")
+                print("Tableau_Transpose ================================== ")
                 print (Tableau_Transpose)
-                print ("===================================================")
+                print ("=================================================== ")
                 # Etape 5 : Parcours Profondeur
                 if Parcours_Profondeur(int(Nb_Variable)*2+1): 
                     # Etape 6 : Affichage du tableau des composantes
-                    print ("===================================================")
-                    print("Tableau_Composante = ")
+                    print("Tableau_Composante ================================= ")
                     print(Tableau_Composante)
-                    print ("===================================================")
+                    print ("=================================================== ")
                     # Etape 7 : Parcours Profondeur Inversé
                     if Parcours_Profondeur_Inv(): 
                         # Etape 8 : Affichage du tableau des composantes Inv
-                        print ("===================================================")
-                        print("Tableau_Composante_Transpose = ")
+                        print("Tableau_Composante_Transpose ======================= ")
                         print(Tableau_Composante_Transpose)
-                        print ("===================================================")
+                        print ("=================================================== ")
                         # Etape 9 : Parcours Profondeur Inversé
-                        print("Resultat Final : La fonction est-elle SAT ?")
-                        return True
+                        b_Est_SAT = True
+                        if Reponse_SAT(): 
+                            # Etape 10 : Parcours pour trouver des littéraux opposés
+                            print ("===================================================")
+                            if b_Est_SAT : print("Resultat Final : Le fichier est SATisfiable !")
+                            else : print("Resultat Final : Le fichier est IN-SATisfiable !")
+                            return True
+                        else:
+                            print("Parcours_Profondeur_Inv a échouée")
+                            return False
                     else:
                         print("Parcours_Profondeur_Inv a échouée")
                         return False
@@ -77,7 +84,7 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
 def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
     global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
-        print("Nomfichier_Sel" + str(Nomfichier_Sel))
+        print("Nomfichier_Sel : " + str(Nomfichier_Sel))
         #Ouverture du fichier
         with open(Nomfichier_Sel, "r") as File_In:
             # Lecture Ligne 1
@@ -272,6 +279,25 @@ def Parcours_Profondeur_Inv():
         print('Erreur Parcours_Profondeur : ', e)
         return False
 
+############################## Fonction def Reponse_SAT():
+def Reponse_SAT():
+    global Nb_Variable, Tableau_Composante_Transpose, b_Est_SAT
+
+    try:
+        for Lst_Tab_En_Cours in (Tableau_Composante_Transpose):
+            for Val_Tab_En_Cours in (Lst_Tab_En_Cours):
+                print("Val_Tab_En_Cours = " + str(Val_Tab_En_Cours))
+                # Calcul du complément
+                Calcul_Complement = int(Nb_Variable)*2-int(Val_Tab_En_Cours)
+                print("Calcul_Complement = " + str(Calcul_Complement))
+                if (Calcul_Complement in Lst_Tab_En_Cours): b_Est_SAT = False
+
+        return True
+
+    except IndexError as e:
+        print('Erreur Reponse_SAT : ', e)
+        return False
+
 ############################## Fonction def Parcours_Vertical():
 def Parcours_Vertical(Nb_Val_Tab_Param):
     global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
@@ -326,7 +352,7 @@ def Parcours_Vertical_Transpose(Nb_Val_Tab_Param):
 
 ############################## Fct Main principale
 def Main():
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante, b_Est_SAT
     try:
         Tableau_Principal = []
         Tableau_Transpose = []
@@ -335,6 +361,7 @@ def Main():
         Tableau_Composante_Transpose = []
         Liste_Composante = []
         Nb_Variable = 0
+        b_Est_SAT = True
 
         # Création de la fenêtre
         Fen_Main = tk.Tk()
