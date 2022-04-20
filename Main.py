@@ -291,7 +291,7 @@ def Reponse_SAT():
                 # Calcul du complément
                 Calcul_Complement = int(Nb_Variable)*2-int(Val_Tab_En_Cours)
                 print("Calcul_Complement = " + str(Calcul_Complement))
-                if (Calcul_Complement != Val_Tab_En_Cours): # Cas du 0 qui a le même complément
+                if (Calcul_Complement != Val_Tab_En_Cours): # Cas du 0 médiant qui a le même complément
                     if (Calcul_Complement in Lst_Tab_En_Cours): b_Est_SAT = False
                     print("b_Est_SAT = " + str(b_Est_SAT))
 
