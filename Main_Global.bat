@@ -1,0 +1,44 @@
+
+rem lancement direct avec le fichier de config en paramètre
+Python Main.py examples\TestErr.cnf
+Python Main.py examples\nonsat0.cnf
+Python Main.py examples\nonsat1.cnf
+Python Main.py examples\nonsat2.cnf
+Python Main.py examples\nonsat3.cnf
+Python Main.py examples\nonsat4.cnf
+Python Main.py examples\nonsat5.cnf
+Python Main.py examples\nonsat6.cnf
+Python Main.py examples\nonsat7.cnf
+Python Main.py examples\nonsat8.cnf
+Python Main.py examples\nonsat9.cnf
+Python Main.py examples\nonsat10.cnf
+Python Main.py examples\nonsat11.cnf
+Python Main.py examples\nonsat12.cnf
+Python Main.py examples\nonsat13.cnf
+Python Main.py examples\nonsat14.cnf
+Python Main.py examples\nonsat15.cnf
+Python Main.py examples\nonsat16.cnf
+Python Main.py examples\nonsat17.cnf
+Python Main.py examples\nonsat18.cnf
+Python Main.py examples\nonsat19.cnf
+Python Main.py examples\sat0.cnf
+Python Main.py examples\sat1.cnf
+Python Main.py examples\sat2.cnf
+Python Main.py examples\sat3.cnf
+Python Main.py examples\sat4.cnf
+Python Main.py examples\sat5.cnf
+Python Main.py examples\sat6.cnf
+Python Main.py examples\sat7.cnf
+Python Main.py examples\sat8.cnf
+Python Main.py examples\sat9.cnf
+Python Main.py examples\sat10.cnf
+Python Main.py examples\sat11.cnf
+Python Main.py examples\sat12.cnf
+Python Main.py examples\sat13.cnf
+Python Main.py examples\sat14.cnf
+Python Main.py examples\sat15.cnf
+Python Main.py examples\sat16.cnf
+Python Main.py examples\sat17.cnf
+Python Main.py examples\sat18.cnf
+Python Main.py examples\sat19.cnf
+pause
