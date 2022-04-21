@@ -173,8 +173,8 @@ def Remplit_Tableau(Nb_Clause, File_In):
             Tableau_Principal[int(Clause_X)][int(Clause_Y)] = 1
             #print (Tableau_Principal)
             # L1 et Non L2 ==> (Clause_Y) x (-1)
-            Clause_X = int(Nb_Variable) + int(Litteral_1)
-            Clause_Y = int(Nb_Variable) + int(Litteral_2)*(-1)
+            Clause_X = int(Nb_Variable) + int(Litteral_2)*(-1)
+            Clause_Y = int(Nb_Variable) + int(Litteral_1)
             print("2 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
             Tableau_Principal[int(Clause_X)][int(Clause_Y)] = 1
 
