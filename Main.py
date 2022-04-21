@@ -166,13 +166,13 @@ def Remplit_Tableau(Nb_Clause, File_In):
             # Notre 0 est au centre donc à la position (Nb_Variable + 1)/2
             # il suffit d'ajouter ensuite la valeur de la clause (positive ou négative)
             
-            # Non L1 et L2 ==> (Clause_X) x (-1)
+            # Non L1 ==> L2 ==> (Clause_X) = L1 x (-1)
             Clause_X = int(Nb_Variable) + int(Litteral_1)*(-1)
             Clause_Y = int(Nb_Variable) + int(Litteral_2)
             print("1 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
             Tableau_Principal[int(Clause_X)][int(Clause_Y)] = 1
             #print (Tableau_Principal)
-            # L1 et Non L2 ==> (Clause_Y) x (-1)
+            # Non L2 ==> L1 ==> (Clause_X) = L2 x (-1)
             Clause_X = int(Nb_Variable) + int(Litteral_2)*(-1)
             Clause_Y = int(Nb_Variable) + int(Litteral_1)
             print("2 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
