@@ -6,5 +6,6 @@ rem lancement sans paramètre ==> IHM
 rem Python Main.py 
 
 Python Main.py examples\sat_ex.cnf
+Python Main.py examples\sat2.cnf
 
 pause
