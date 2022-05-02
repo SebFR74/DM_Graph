@@ -51,6 +51,8 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
                         print("Tableau_Composante_Transpose ======================= ")
                         print(Tableau_Composante_Transpose)
                         print ("=================================================== ")
+                        print(Tableau_Composante_Transpose2)
+                        print ("=================================================== ")
                         # Etape 9 : Parcours Profondeur Inversé
                         b_Est_SAT = True
                         if Reponse_SAT(): 
@@ -239,13 +241,15 @@ def Parcours_Profondeur(Nb_Val_Tab):
 
 ############################## Fonction def Parcours_Profondeur_Inv():
 def Parcours_Profondeur_Inv():
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante, Liste_Composante2, Tableau_Composante_Transpose2
 
     try:
         # On Vide la liste des Variables déjà parcourus
         Liste_parcourus = []
         Liste_Composante = []
+        Liste_Composante2 = []
         Tableau_Composante_Transpose = []
+        Tableau_Composante_Transpose2 = []
 
         for Lst_Tab_En_Cours in reversed(Tableau_Composante):
             print(Lst_Tab_En_Cours)
@@ -260,6 +264,8 @@ def Parcours_Profondeur_Inv():
                     Liste_parcourus.append(Val_Tab_En_Cours)
                     # On ajoute à la liste de la composante en cours
                     Liste_Composante.append(Val_Tab_En_Cours)
+                    essai = int(Val_Tab_En_Cours)-int(Nb_Variable)
+                    Liste_Composante2.append(essai)
 
                     # On Parcours la colonne de la clause trouvée
                     Parcours_Vertical_Transpose(Val_Tab_En_Cours)
@@ -267,11 +273,13 @@ def Parcours_Profondeur_Inv():
                     # On ajoute la composante en cours à la liste Tableau_Composante
                     print("Liste_Composante = " + str(Liste_Composante))
                     Tableau_Composante_Transpose.append(Liste_Composante)
+                    Tableau_Composante_Transpose2.append(Liste_Composante2)
                     #print("Tableau_Composante_Transpose = ")
                     #print(Tableau_Composante_Transpose)
 
                     # On efface la liste de la composante en cours pour la nouvelle
                     Liste_Composante = []
+                    Liste_Composante2 = []
 
         return True
 
@@ -329,7 +337,7 @@ def Parcours_Vertical(Nb_Val_Tab_Param):
 
 ############################## Fonction def Parcours_Vertical_Transpose():
 def Parcours_Vertical_Transpose(Nb_Val_Tab_Param):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante, Liste_Composante2
     
     try:
         # On parcours la liste des Variables à visiter
@@ -346,6 +354,8 @@ def Parcours_Vertical_Transpose(Nb_Val_Tab_Param):
                     # On ajoute si la variable a déjà été parcourue
                     Liste_parcourus.append(Nb_Val_Tab_En_Cours)
                     Liste_Composante.append(Nb_Val_Tab_En_Cours)
+                    essai = int(Nb_Val_Tab_En_Cours)-int(Nb_Variable)
+                    Liste_Composante2.append(essai)
                     #print("Et on refait un parcours Vertical !")
                     Parcours_Vertical_Transpose(Nb_Val_Tab_En_Cours)
 
