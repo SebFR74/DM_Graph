@@ -30,36 +30,39 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
             return True
         if Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
             # Etape 2 : Affichage Tableau Principal avec les clauses
-            print("Tableau_Principal ================================= ")
-            print (Tableau_Principal)
-            print ("================================================== ")
+            #print("Tableau_Principal ================================= ")
+            #print (Tableau_Principal)
+            #print ("================================================== ")
             # Etape 3 : Transposition matrice
             if Transpose_Tableau(int(Nb_Variable)*2+1): 
                 # Etape 4 : Affichage Matrice Trasposée
-                print("Tableau_Transpose ================================== ")
-                print (Tableau_Transpose)
-                print ("=================================================== ")
+                #print("Tableau_Transpose ================================== ")
+                #print (Tableau_Transpose)
+                #print ("=================================================== ")
                 # Etape 5 : Parcours Profondeur
                 if Parcours_Profondeur(int(Nb_Variable)*2+1): 
                     # Etape 6 : Affichage du tableau des composantes
-                    print("Tableau_Composante ================================= ")
-                    print(Tableau_Composante)
-                    print ("=================================================== ")
+                    #print("Tableau_Composante ================================= ")
+                    #print(Tableau_Composante)
+                    #print ("=================================================== ")
                     # Etape 7 : Parcours Profondeur Inversé
                     if Parcours_Profondeur_Inv(): 
                         # Etape 8 : Affichage du tableau des composantes Inv
-                        print("Tableau_Composante_Transpose ======================= ")
-                        print(Tableau_Composante_Transpose)
-                        print ("=================================================== ")
-                        print(Tableau_Composante_Transpose2)
-                        print ("=================================================== ")
+                        #print("Tableau_Composante_Transpose ======================= ")
+                        #print(Tableau_Composante_Transpose)
+                        #print ("=================================================== ")
                         # Etape 9 : Parcours Profondeur Inversé
                         b_Est_SAT = True
                         if Reponse_SAT(): 
                             # Etape 10 : Parcours pour trouver des littéraux opposés
-                            print ("===================================================")
-                            if b_Est_SAT : print("Resultat Final : Le fichier est SATisfiable !")
-                            else : print("Resultat Final : Le fichier est IN-SATisfiable !")
+                            #print ("===================================================")
+                            Fen_Main.Txt_Res.delete(0, "end")
+                            if b_Est_SAT : 
+                                print("Resultat Final : Le fichier est SATisfiable !")
+                                Fen_Main.Txt_Res.insert(0,"Le fichier est SATisfiable !")
+                            else : 
+                                print("Resultat Final : Le fichier est IN-SATisfiable !")
+                                Fen_Main.Txt_Res.insert(0,"Le fichier est IN-SATisfiable !")
                             return True
                         else:
                             print("Parcours_Profondeur_Inv a échouée")
@@ -86,7 +89,7 @@ def Verif_SAT(Nomfichier_Sel,Fen_Main):
 def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
     global Tableau_Principal, Tableau_Transpose, Nb_Variable
     try:
-        print("Nomfichier_Sel : " + str(Nomfichier_Sel))
+        #print("Nomfichier_Sel : " + str(Nomfichier_Sel))
         #Ouverture du fichier
         with open(Nomfichier_Sel, "r") as File_In:
             # Lecture Ligne 1
@@ -103,14 +106,14 @@ def Lecture_Fichier_Config(Nomfichier_Sel,Fen_Main):
                     # Test si config OK
                     if (Lignes_Lue[0:6] == "p cnf "): # Config OK
                         Config_partie_2 = Lignes_Lue[6:-1] # -1 on en profite pour virer le CRLF
-                        print("Config OK : " + Config_partie_2)
+                        #print("Config OK : " + Config_partie_2)
                         # Config OK - On charge les param - Nb de variables - Nb de clauses
                         Espace_Config_partie_2 = Config_partie_2.find(" ")
-                        print("Espace_Config_partie_2 : " + str(Espace_Config_partie_2))
+                        #print("Espace_Config_partie_2 : " + str(Espace_Config_partie_2))
                         Nb_Variable = Config_partie_2[0:Espace_Config_partie_2]
                         Nb_Clause = Config_partie_2[Espace_Config_partie_2+1:len(Config_partie_2)]
-                        print("Nb_Variable : " + Nb_Variable)
-                        print("Nb_Clause : " + Nb_Clause)
+                        #print("Nb_Variable : " + Nb_Variable)
+                        #print("Nb_Clause : " + Nb_Clause)
 
                         ## A ce niveau on a toutes les infos, la suite est la iste des clauses.
                         ## On va donc créer a matrice sous forme d'un tableau
@@ -149,35 +152,35 @@ def Remplit_Tableau(Nb_Clause, File_In):
         for i_Clause_Lue in range(int(Nb_Clause)):
             ######################## Lecture et décomposition de la clause
             Clause_Lue = File_In.readline()
-            # print("Clause_Lue : " + Clause_Lue)
+            #print("Clause_Lue : " + Clause_Lue)
             Espace_1_Clause = Clause_Lue.find(" ")
             Litteral_1 = Clause_Lue[0:Espace_1_Clause]
-            # print("Litteral_1 : " + Litteral_1)
+            #print("Litteral_1 : " + Litteral_1)
             Reste_Clause = Clause_Lue[Espace_1_Clause+1:len(Clause_Lue)]
-            # print("Reste_Clause : " + Reste_Clause)
+            #print("Reste_Clause : " + Reste_Clause)
             Espace_2_Clause = Reste_Clause.find(" ")
             Litteral_2 = Reste_Clause[0:Espace_2_Clause]
-            # print("Litteral_2 : " + Litteral_2)
+            #print("Litteral_2 : " + Litteral_2)
             Caract_fin = Reste_Clause[Espace_2_Clause+1:-1]
-            # print("Caract_fin : " + Caract_fin)
+            #print("Caract_fin : " + Caract_fin)
             if (Caract_fin != "0"):
                 return False
-            print("L1 : " + Litteral_1 + " - L2 : " + Litteral_2 + " - Fin : " + Caract_fin)
+            #print("L1 : " + Litteral_1 + " - L2 : " + Litteral_2 + " - Fin : " + Caract_fin)
             ######################## Ajout des 2 valeurs dans la matrice
             # Calcul pour positionner la ligne / colonne : 
-            # Notre 0 est au centre donc à la position (Nb_Variable + 1)/2
+            # Notre 0 est au centre donc à la position (Nb_Variable + 1)
             # il suffit d'ajouter ensuite la valeur de la clause (positive ou négative)
             
             # Non L1 ==> L2 ==> (Clause_X) = L1 x (-1)
             Clause_X = int(Nb_Variable) + int(Litteral_1)*(-1)
             Clause_Y = int(Nb_Variable) + int(Litteral_2)
-            print("1 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
+            #print("1 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
             Tableau_Principal[int(Clause_X)][int(Clause_Y)] = 1
             #print (Tableau_Principal)
             # Non L2 ==> L1 ==> (Clause_X) = L2 x (-1)
             Clause_X = int(Nb_Variable) + int(Litteral_2)*(-1)
             Clause_Y = int(Nb_Variable) + int(Litteral_1)
-            print("2 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
+            #print("2 - Clause_X : " + str(Clause_X) + " - Clause_Y : " +  str(Clause_Y))
             Tableau_Principal[int(Clause_X)][int(Clause_Y)] = 1
 
         return True
@@ -202,7 +205,7 @@ def Transpose_Tableau(Nb_Val_Tab):
 
 ############################## Fonction def Parcours_Profondeur():
 def Parcours_Profondeur(Nb_Val_Tab):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
+    global Liste_parcourus, Tableau_Composante, Liste_Composante
 
     try:
         # On Vide la liste des Variables déjà parcourus
@@ -210,9 +213,9 @@ def Parcours_Profondeur(Nb_Val_Tab):
         Liste_Composante = []
 
         # On parcours la liste des Variables A parcourir
-        print("Nb_Val_Tab = " + str(Nb_Val_Tab))
+        #print("Nb_Val_Tab = " + str(Nb_Val_Tab))
         for Nb_Val_Tab_En_Cours in range(Nb_Val_Tab):
-            print("Nb_Val_Tab_En_Cours ========================= " + str(Nb_Val_Tab_En_Cours))
+            #print("Nb_Val_Tab_En_Cours ========================= " + str(Nb_Val_Tab_En_Cours))
             # On cherche si la variable a déjà été parcourue
             if Nb_Val_Tab_En_Cours not in Liste_parcourus:
                 #print("Nb_Val_Tab_En_Cours n'est pas parcourus")
@@ -222,10 +225,10 @@ def Parcours_Profondeur(Nb_Val_Tab):
                 Liste_Composante.append(Nb_Val_Tab_En_Cours)
 
                 # On Parcours la colonne de la clause trouvée
-                Parcours_Vertical(Nb_Val_Tab_En_Cours)
+                Parcours_Vertical(Nb_Val_Tab_En_Cours,"Tableau_Composante")
 
                 # On ajoute la composante en cours à la liste Tableau_Composante
-                print("Liste_Composante = " + str(Liste_Composante))
+                #print("Liste_Composante = " + str(Liste_Composante))
                 Tableau_Composante.append(Liste_Composante)
                 #print("Tableau_Composante = ")
                 #print(Tableau_Composante)
@@ -241,22 +244,20 @@ def Parcours_Profondeur(Nb_Val_Tab):
 
 ############################## Fonction def Parcours_Profondeur_Inv():
 def Parcours_Profondeur_Inv():
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante, Liste_Composante2, Tableau_Composante_Transpose2
+    global Liste_parcourus, Tableau_Composante, Tableau_Composante_Transpose, Liste_Composante
 
     try:
         # On Vide la liste des Variables déjà parcourus
         Liste_parcourus = []
         Liste_Composante = []
-        Liste_Composante2 = []
         Tableau_Composante_Transpose = []
-        Tableau_Composante_Transpose2 = []
 
         for Lst_Tab_En_Cours in reversed(Tableau_Composante):
-            print(Lst_Tab_En_Cours)
+            #print(Lst_Tab_En_Cours)
             for Val_Tab_En_Cours in (Lst_Tab_En_Cours):
-                print(Val_Tab_En_Cours)
+                #print(Val_Tab_En_Cours)
 
-                print("Val_Tab_En_Cours ========================= " + str(Val_Tab_En_Cours))
+                #print("Val_Tab_En_Cours ========================= " + str(Val_Tab_En_Cours))
                 # On cherche si la variable a déjà été parcourue
                 if Val_Tab_En_Cours not in Liste_parcourus:
                     #print("Nb_Val_Tab_En_Cours n'est pas parcourus")
@@ -264,22 +265,18 @@ def Parcours_Profondeur_Inv():
                     Liste_parcourus.append(Val_Tab_En_Cours)
                     # On ajoute à la liste de la composante en cours
                     Liste_Composante.append(Val_Tab_En_Cours)
-                    essai = int(Val_Tab_En_Cours)-int(Nb_Variable)
-                    Liste_Composante2.append(essai)
 
                     # On Parcours la colonne de la clause trouvée
-                    Parcours_Vertical_Transpose(Val_Tab_En_Cours)
+                    Parcours_Vertical(Val_Tab_En_Cours,"Tableau_Composante_Transpose")
 
                     # On ajoute la composante en cours à la liste Tableau_Composante
-                    print("Liste_Composante = " + str(Liste_Composante))
+                    #print("Liste_Composante = " + str(Liste_Composante))
                     Tableau_Composante_Transpose.append(Liste_Composante)
-                    Tableau_Composante_Transpose2.append(Liste_Composante2)
                     #print("Tableau_Composante_Transpose = ")
                     #print(Tableau_Composante_Transpose)
 
                     # On efface la liste de la composante en cours pour la nouvelle
                     Liste_Composante = []
-                    Liste_Composante2 = []
 
         return True
 
@@ -292,16 +289,16 @@ def Reponse_SAT():
     global Nb_Variable, Tableau_Composante_Transpose, b_Est_SAT
 
     try:
-        print("b_Est_SAT_0 = " + str(b_Est_SAT))
+        #print("b_Est_SAT_0 = " + str(b_Est_SAT))
         for Lst_Tab_En_Cours in (Tableau_Composante_Transpose):
             for Val_Tab_En_Cours in (Lst_Tab_En_Cours):
-                print("Val_Tab_En_Cours = " + str(Val_Tab_En_Cours))
+                #print("Val_Tab_En_Cours = " + str(Val_Tab_En_Cours))
                 # Calcul du complément
                 Calcul_Complement = int(Nb_Variable)*2-int(Val_Tab_En_Cours)
-                print("Calcul_Complement = " + str(Calcul_Complement))
+                #print("Calcul_Complement = " + str(Calcul_Complement))
                 if (Calcul_Complement != Val_Tab_En_Cours): # Cas du 0 médiant qui a le même complément
                     if (Calcul_Complement in Lst_Tab_En_Cours): b_Est_SAT = False
-                    print("b_Est_SAT = " + str(b_Est_SAT))
+                    #print("b_Est_SAT = " + str(b_Est_SAT))
 
         return True
 
@@ -310,18 +307,19 @@ def Reponse_SAT():
         return False
 
 ############################## Fonction def Parcours_Vertical():
-def Parcours_Vertical(Nb_Val_Tab_Param):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante
-    
+def Parcours_Vertical(Nb_Val_Tab_Param, Tableau_Param):
+    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Liste_Composante
+
     try:
         # On parcours la liste des Variables à visiter
         #print("Parcours_Vertical !")
         for Nb_Val_Tab_En_Cours in range(int(Nb_Variable)*2+1):
             #print("Nb_Val_Tab_Param = " + str(Nb_Val_Tab_Param))
             #print("Nb_Val_Tab_En_Cours = " + str(Nb_Val_Tab_En_Cours))
-            #print("Tableau_Principal = " + str(Tableau_Principal[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours]))
-            if Tableau_Principal[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours] == 1:
-                #print("Tableau_Principal = 1 - As-t'il été parcourus ?")
+            if ((Tableau_Param == "Tableau_Composante") and (Tableau_Principal[Nb_Val_Tab_En_Cours][Nb_Val_Tab_Param] == 1)) or \
+                ((Tableau_Param == "Tableau_Composante_Transpose") and (Tableau_Transpose[Nb_Val_Tab_En_Cours][Nb_Val_Tab_Param] == 1)):
+            #if Tableau_Param[Nb_Val_Tab_En_Cours][Nb_Val_Tab_Param] == 1:
+                #print("Tableau_Param = 1 - As-t'il été parcourus ?")
                 # On cherche si la variable a déjà été parcourue
                 if Nb_Val_Tab_En_Cours not in Liste_parcourus:
                     #print("Non pas parcourus donc on ajoute au liste !")
@@ -329,39 +327,12 @@ def Parcours_Vertical(Nb_Val_Tab_Param):
                     Liste_parcourus.append(Nb_Val_Tab_En_Cours)
                     Liste_Composante.append(Nb_Val_Tab_En_Cours)
                     #print("Et on refait un parcours Vertical !")
-                    Parcours_Vertical(Nb_Val_Tab_En_Cours)
+                    Parcours_Vertical(Nb_Val_Tab_En_Cours,Tableau_Param)
 
     except IndexError as e:
         print('Erreur Parcours_Vertical : ', e)
         return False
 
-############################## Fonction def Parcours_Vertical_Transpose():
-def Parcours_Vertical_Transpose(Nb_Val_Tab_Param):
-    global Tableau_Principal, Tableau_Transpose, Nb_Variable, Liste_parcourus, Tableau_Composante, Liste_Composante, Liste_Composante2
-    
-    try:
-        # On parcours la liste des Variables à visiter
-        #print("Parcours_Vertical !")
-        for Nb_Val_Tab_En_Cours in range(int(Nb_Variable)*2+1):
-            #print("Nb_Val_Tab_Param = " + str(Nb_Val_Tab_Param))
-            #print("Nb_Val_Tab_En_Cours = " + str(Nb_Val_Tab_En_Cours))
-            #print("Tableau_Principal = " + str(Tableau_Principal[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours]))
-            if Tableau_Transpose[Nb_Val_Tab_Param][Nb_Val_Tab_En_Cours] == 1:
-                #print("Tableau_Principal = 1 - As-t'il été parcourus ?")
-                # On cherche si la variable a déjà été parcourue
-                if Nb_Val_Tab_En_Cours not in Liste_parcourus:
-                    #print("Non pas parcourus donc on ajoute au liste !")
-                    # On ajoute si la variable a déjà été parcourue
-                    Liste_parcourus.append(Nb_Val_Tab_En_Cours)
-                    Liste_Composante.append(Nb_Val_Tab_En_Cours)
-                    essai = int(Nb_Val_Tab_En_Cours)-int(Nb_Variable)
-                    Liste_Composante2.append(essai)
-                    #print("Et on refait un parcours Vertical !")
-                    Parcours_Vertical_Transpose(Nb_Val_Tab_En_Cours)
-
-    except IndexError as e:
-        print('Erreur Parcours_Vertical_Transpose : ', e)
-        return False
 
 ############################## Fct Main principale
 def Main():
@@ -378,7 +349,7 @@ def Main():
 
         # Création de la fenêtre
         Fen_Main = tk.Tk()
-        Fen_Main.geometry("500x500")
+        Fen_Main.geometry("700x200")
         Fen_Main.title ("DM Graph")
 
         ## Ajout d'un bouton Select ##
@@ -391,27 +362,33 @@ def Main():
 
         ## Ajout d'un bouton Fin ##
         Fen_Main.Bouton_Quit = tk.Button(Fen_Main, text="Quit", command=Fen_Main.destroy)
-        Fen_Main.Bouton_Quit.place(x=400,y=470,width=90)
+        Fen_Main.Bouton_Quit.place(x=600,y=170,width=90)
 
         ## Ajout d'un Champ Fichier ##
         Fen_Main.Txt_Fic = tk.Entry(Fen_Main)
-        Fen_Main.Txt_Fic.place(x=130,y=10,width=350,height=25)
+        Fen_Main.Txt_Fic.place(x=130,y=10,width=550,height=25)
  
         ## Ajout d'un Champ Ligne 1 ##
         Fen_Main.Txt_L1 = tk.Entry(Fen_Main)
-        Fen_Main.Txt_L1.place(x=130,y=40,width=350,height=25)
+        Fen_Main.Txt_L1.place(x=130,y=40,width=550,height=25)
 
         ## Ajout d'un Champ Ligne 2##
         Fen_Main.Txt_L2 = tk.Entry(Fen_Main)
-        Fen_Main.Txt_L2.place(x=130,y=70,width=350,height=25)
+        Fen_Main.Txt_L2.place(x=130,y=70,width=550,height=25)
+
+        ## Ajout d'un Champ Resultat##
+        Fen_Main.Lbl_Res = tk.Label(Fen_Main,text="Résultat :")
+        Fen_Main.Lbl_Res.place(x=10,y=100,width=100,height=25)
+        Fen_Main.Txt_Res = tk.Entry(Fen_Main)
+        Fen_Main.Txt_Res.place(x=130,y=100,width=550,height=25)
 
         if len(sys.argv) == 1:
             ## Lancement de la fenetre car 1 seul param
-            print("Pas d'argument ==> on lancera l'IHM")
+            #print("Pas d'argument ==> on lancera l'IHM")
             Fen_Main.mainloop()
         elif len(sys.argv) == 2:
             ## Lancement auto si 2ème Param
-            print("2ème Argument trouvé ==> on lancera la verif direct avec " + sys.argv[1])
+            #print("2ème Argument trouvé ==> on lancera la verif direct avec " + sys.argv[1])
             Fen_Main.Txt_Fic.insert(0,sys.argv[1])
             Verif_SAT(sys.argv[1],Fen_Main)
         else:
